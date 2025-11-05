@@ -18,8 +18,7 @@ app.get('/', (req, res) => res.json({ ok: true }));
   try {
     await db.sequelize.authenticate();
     console.log('DB connected');
-    // For first run only: sync({ alter: true }) or migrations preferred
-    // await db.sequelize.sync({ alter: true });
+
   } catch (err) {
     console.error('DB connection failed', err);
   }
