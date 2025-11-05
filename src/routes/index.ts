@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import authRoutes from './auth.routes';
-import profileRoutes from './profile.routes';
-import jobRoutes from './job.routes';
-import applicationRoutes from './applicaiton.routes';
+import authRoutes from './auth.routes.js';
+import profileRoutes from './profile.routes.js';
+import jobRoutes from './job.routes.js';
+import applicationRoutes from './applicaiton.routes.js';
 
 // import other routes similarly
 

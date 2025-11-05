@@ -1,8 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import routes from './routes';
-import db from './models';
-import env from './config/env';
+import routes from './routes/index.js';
+import db from './models/index.js';
+import env from './config/env.js';
 
 const app = express();
 app.use(bodyParser.json({ limit: '5mb' }));

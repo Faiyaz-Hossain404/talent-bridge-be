@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import authService from '../services/auth.service';
-import db from '../models';
+import authService from '../services/auth.service.js';
+import db from '../models/index.js';
 
 const { User, Role } = db;
 

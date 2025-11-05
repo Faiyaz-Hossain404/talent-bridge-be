@@ -1,8 +1,8 @@
-import db from '../models';
-import { RegisterDTO, LoginDTO } from '../types/user.types';
+import db from '../models/index.js';
+import { RegisterDTO, LoginDTO } from '../types/user.types.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import env from '../config/env';
+import env from '../config/env.js';
 
 const { User, Role } = db;
 

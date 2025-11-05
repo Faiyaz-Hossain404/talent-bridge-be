@@ -1,4 +1,5 @@
-import db from '../models';
+import db from '../models/index.js';
+
 const { Application, Job, User, ApplicationStatusHistory, Role } = db as any;
 
 class ApplicationService {

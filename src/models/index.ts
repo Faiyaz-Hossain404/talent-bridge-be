@@ -1,13 +1,13 @@
 import { Sequelize } from 'sequelize';
-import sequelize from '../config/database';
+import sequelize from '../config/database.js';
 
 // Model factories
-import RoleFactory from './role.model';
-import UserFactory from './user.model';
-import ProfileFactory from './profile.model';
-import JobFactory from './job.model';
-import ApplicationFactory from './application.model';
-import ApplicationStatusHistoryFactory from './applicationStatusHistory.model';
+import RoleFactory from './role.model.js';
+import UserFactory from './user.model.js';
+import ProfileFactory from './profile.model.js';
+import JobFactory from './job.model.js';
+import ApplicationFactory from './application.model.js';
+import ApplicationStatusHistoryFactory from './applicationStatusHistory.model.js';
 
 // Init models
 const Role = RoleFactory(sequelize);

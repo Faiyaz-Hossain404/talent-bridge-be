@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import appService from '../services/application.service';
+import appService from '../services/application.service.js';
 
 class ApplicationController {
   async apply(req: Request, res: Response) {

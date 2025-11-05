@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import jobService from '../services/job.service';
+import jobService from '../services/job.service.js';
 
 class JobController {
   async list(req: Request, res: Response) {
