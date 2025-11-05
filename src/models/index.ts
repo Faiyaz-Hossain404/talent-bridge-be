@@ -4,11 +4,13 @@ import sequelize from '../config/database.js';
 import RoleFactory from './role.model.js';
 import UserFactory from './user.model.js';
 import ProfileFactory from './profile.model.js';
+import SkillFactory from './skill.model.js';
 
 // Init models
 const Role = RoleFactory(sequelize);
 const User = UserFactory(sequelize);
 const Profile = ProfileFactory(sequelize);
+const Skill = SkillFactory(sequelize);
 
 // Associations
 Role.hasMany(User, { foreignKey: 'role_id', as: 'users' });
