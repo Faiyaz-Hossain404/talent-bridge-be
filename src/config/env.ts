@@ -1,22 +1,16 @@
-import dotenv from "dotenv";
-import path from "path";
+import dotenv from 'dotenv';
+dotenv.config();
 
-dotenv.config({ path: path.resolve(process.cwd(), ".env") });
-
-export const ENV = {
-  nodeEnv: process.env.NODE_ENV || "development",
-  port: process.env.PORT ? parseInt(process.env.PORT, 10) : 4000,
-
-  db: {
-    host: process.env.DB_HOST || "localhost",
-    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
-    name: process.env.DB_NAME || "employee_review_db",
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "pass",
-  },
-
-  jwt: {
-    secret: process.env.JWT_SECRET || "defaultsecret",
-    expiresIn: process.env.JWT_EXPIRES_IN || "1h",
-  },
+export default {
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  PORT: process.env.PORT || '5000',
+  DB_HOST: process.env.DB_HOST || 'localhost',
+  DB_PORT: process.env.DB_PORT || '5432',
+  DB_USER: process.env.DB_USER || 'postgres',
+  DB_PASS: process.env.DB_PASS || 'postgres',
+  DB_NAME: process.env.DB_NAME || 'hirely',
+  JWT_SECRET:
+    process.env.JWT_SECRET || 'Yl7Qzz4o2mEoBRaEOlZvVU_U5j8-IcWhlIjBrXuZBlup6j7FcslXPB-SklhSEAmlZWznoBMKDgyA68VEvFEixA',
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '7d',
+  BCRYPT_SALT_ROUNDS: Number(process.env.BCRYPT_SALT_ROUNDS || 10)
 };
