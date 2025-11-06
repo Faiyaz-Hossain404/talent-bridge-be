@@ -27,14 +27,18 @@ const User = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       field: "role_id",
-      defaultValue: 2,
       references: {
         model: Role,
         key: "id",
       },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
     },
   },
-  { tableName: "users", timestamps: true }
+  {
+    tableName: "users",
+    timestamps: true,
+  }
 );
 
 export default User;

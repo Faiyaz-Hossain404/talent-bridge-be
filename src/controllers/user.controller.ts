@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  updateSelfUser,
 } from "../services/user.service";
 
 export const createUserController = async (req: Request, res: Response) => {
@@ -33,4 +34,14 @@ export const deleteUserController = async (req: Request, res: Response) => {
   const deleted = await deleteUser(Number(req.params.id));
   if (!deleted) return res.status(404).json({ message: "User not found" });
   res.json({ message: "User deleted successfully" });
+};
+
+export const updateSelfUserController = async (req: Request, res: Response) => {
+  try {
+    const updated = await updateSelfUser(req.user!.id, req.body);
+    if (!updated) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "Account updated successfully", user: updated });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message || "Update failed" });
+  }
 };

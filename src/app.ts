@@ -1,20 +1,12 @@
 import express from "express";
-import { Request, Response } from "express";
+import routes from "./routes";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/health", (_req: Request, res: Response) => {
-  return res.status(200).json({ status: "ok", message: "Server healthy" });
-});
+app.get("/health", (_req, res) => res.status(200).json({ status: "ok" }));
 
-app.get("/", (_req: Request, res: Response) => {
-  return res.send("Job Portal API is running...");
-});
-
-// app.get("/env", (_req: Request, res: Response) => {
-//   res.json({ dbHost: process.env.DB_HOST, jwtSecret: process.env.JWT_SECRET });
-// });
+app.use("/api", routes); // <— all routes under /api
 
 export default app;

@@ -41,3 +41,19 @@ export const deleteUser = async (id: number): Promise<boolean> => {
   const deletedCount = await User.destroy({ where: { id } });
   return deletedCount > 0;
 };
+
+export const updateSelfUser = async (
+  userId: number,
+  data: TUserUpdateInput
+): Promise<TUser | null> => {
+  const updateData: any = { ...data };
+
+  if (data.password) {
+    updateData.password = await hashPassword(data.password);
+  }
+
+  await User.update(updateData, { where: { id: userId } });
+
+  const updated = await User.findByPk(userId);
+  return updated ? (updated.get() as TUser) : null;
+};
