@@ -9,7 +9,15 @@ import {
 
 export const createJobController = async (req: Request, res: Response) => {
   try {
-    const job = await createJob(req.body);
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const job = await createJob({
+      ...req.body,
+      userId: req.user.id,
+    });
+
     return res.status(201).json({ message: "Job created successfully", job });
   } catch (error: any) {
     return res

@@ -7,14 +7,21 @@ import {
 
 export const applyJob = async (req: Request, res: Response) => {
   try {
-    const { jobId } = req.body;
+    const { jobId, coverLetter, resumeUrl, metadata } = req.body;
     const userId = req.user!.id;
 
     if (!jobId) {
       return res.status(400).json({ message: "jobId is required" });
     }
 
-    const application = await createApplication({ jobId, userId });
+    const application = await createApplication({
+      jobId,
+      userId,
+      coverLetter,
+      resumeUrl,
+      metadata,
+    });
+
     return res.status(201).json({
       message: "Application submitted successfully",
       application,
@@ -44,7 +51,6 @@ export const adminUpdateApplicationStatus = async (
 ) => {
   try {
     const applicationId = Number(req.params.id);
-
     if (isNaN(applicationId)) {
       return res.status(400).json({ message: "Invalid application ID" });
     }

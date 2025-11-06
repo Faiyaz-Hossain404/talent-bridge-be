@@ -5,13 +5,25 @@ import {
   TApplication,
 } from "../types/application.types";
 
-export const createApplication = (
+export const createApplication = async (
   data: TApplicationCreateInput
-): Promise<TApplication> =>
-  Application.create({
-    ...data,
+): Promise<TApplication> => {
+  const existing = await Application.findOne({
+    where: { userId: data.userId, jobId: data.jobId },
+  });
+  if (existing) {
+    throw new Error("You have already applied to this job");
+  }
+
+  return Application.create({
+    jobId: data.jobId,
+    userId: data.userId,
+    coverLetter: data.coverLetter ?? null,
+    resumeUrl: data.resumeUrl ?? null,
+    metadata: data.metadata ?? null,
     status: "applied",
   }) as unknown as Promise<TApplication>;
+};
 
 export const getApplicationsByUser = (
   userId: number

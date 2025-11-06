@@ -4,8 +4,8 @@ export interface TApplication {
   userId: number;
   status: string;
   appliedAt: Date;
-  coverLetter?: string;
   resumeUrl?: string;
+  coverLetter?: string;
   metadata?: string;
 }
 
@@ -13,6 +13,7 @@ export interface TApplicationCreateInput {
   jobId: number;
   userId: number;
   resumeUrl?: string;
+  coverLetter?: string;
 }
 export interface TApplicationStatusUpdateInput {
   status: string;
