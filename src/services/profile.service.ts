@@ -32,17 +32,21 @@ export const getAllProfiles = async (): Promise<TProfile[]> => {
 
 export const updateProfile = async (
   userId: number,
-  data: TProfileUpdateInput
+  data: Partial<TProfile>
 ): Promise<TProfile | null> => {
-  const normalizedData = {
+  const profile = await Profile.findOne({ where: { userId } });
+  if (!profile) return null;
+
+  const updatedData = {
+    ...profile.get(),
     ...data,
-    experiences: data.experiences || [],
-    skills: data.skills || [],
+    experiences: data.experiences ?? profile.experiences,
+    skills: data.skills ?? profile.skills,
   };
 
-  await Profile.update(normalizedData, { where: { userId } });
-  const updated = await Profile.findOne({ where: { userId } });
-  return updated ? (updated.get() as TProfile) : null;
+  await profile.update(updatedData);
+
+  return profile.get() as TProfile;
 };
 
 export const deleteProfile = async (userId: number): Promise<boolean> => {
