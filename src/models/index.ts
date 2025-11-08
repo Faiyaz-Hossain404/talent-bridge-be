@@ -1,24 +1,11 @@
 import Role from "./role.model";
+import { Skill } from "./skill.model";
 import User from "./user.model";
 import Profile from "./profile.model";
 import { Job } from "./job.model";
 import { Application } from "./application.model";
+import initAssociations from "./initAssociations";
 
-export const initAssociations = () => {
-  Role.hasMany(User, { foreignKey: "roleId" });
-  User.belongsTo(Role, { foreignKey: "roleId" });
+initAssociations();
 
-  User.hasOne(Profile, { foreignKey: "userId" });
-  Profile.belongsTo(User, { foreignKey: "userId" });
-
-  User.hasMany(Job, { foreignKey: "userId" });
-  Job.belongsTo(User, { foreignKey: "userId" });
-
-  User.hasMany(Application, { foreignKey: "userId" });
-  Application.belongsTo(User, { foreignKey: "userId" });
-
-  Job.hasMany(Application, { foreignKey: "jobId" });
-  Application.belongsTo(Job, { foreignKey: "jobId" });
-};
-
-export default initAssociations;
+export { Role, User, Profile, Job, Application, Skill };

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt, { Secret, SignOptions } from "jsonwebtoken";
-import User from "../models/user.model";
+import { User } from "../models";
+
 import { ENV } from "../config/env";
 import { TUser, TUserCreateInput } from "../types/user.types";
 

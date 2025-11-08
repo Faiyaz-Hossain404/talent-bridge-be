@@ -1,4 +1,5 @@
-import Profile from "../models/profile.model";
+import { Profile } from "../models";
+
 import {
   TProfile,
   TProfileCreateInput,

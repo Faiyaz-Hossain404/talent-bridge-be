@@ -1,4 +1,5 @@
-import { Job } from "../models/job.model";
+import { Job } from "../models";
+
 import { TJobCreateInput, TJobUpdateInput, TJob } from "../types/job.types";
 
 export const createJob = (data: TJobCreateInput): Promise<TJob> =>

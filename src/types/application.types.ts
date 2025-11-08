@@ -14,6 +14,7 @@ export interface TApplicationCreateInput {
   userId: number;
   resumeUrl?: string;
   coverLetter?: string;
+  metadata?: string;
 }
 export interface TApplicationStatusUpdateInput {
   status: string;

@@ -1,4 +1,5 @@
-import { Skill } from "../models/skill.model";
+import { Skill } from "../models";
+
 import {
   TSkill,
   TSkillCreateInput,

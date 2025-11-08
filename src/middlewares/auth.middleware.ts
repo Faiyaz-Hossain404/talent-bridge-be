@@ -22,10 +22,16 @@ export const authenticate = async (
     if (!user) return res.status(401).json({ message: "Unauthorized" });
 
     req.user = user.get() as TUser;
-
     next();
-  } catch (err) {
+  } catch (err: any) {
     console.error(err);
-    res.status(401).json({ message: "Invalid token" });
+
+    if (err.name === "TokenExpiredError") {
+      return res
+        .status(401)
+        .json({ message: "Token expired, please login again" });
+    }
+
+    return res.status(401).json({ message: "Invalid token" });
   }
 };

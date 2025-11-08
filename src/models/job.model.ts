@@ -14,7 +14,7 @@ export interface IJob {
   requirements?: string | null;
   benefits?: string | null;
   deadline?: string | null;
-  statusOptions?: any; // jsonb
+  statusOptions?: any; 
   hiringStatus?: string | null;
   isActive?: boolean;
   createdAt?: Date;

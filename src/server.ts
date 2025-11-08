@@ -5,9 +5,12 @@ import { ENV } from "./config/env";
 import app from "./app";
 import { sequelize, dbConnect } from "./config/database";
 
+import "./models";
+
 async function startServer() {
   try {
     await dbConnect();
+
     await sequelize.sync({ alter: true });
     console.log("All models synchronized");
 
@@ -18,7 +21,7 @@ async function startServer() {
     });
   } catch (error) {
     console.error("Failed to start server:", error);
-    process.exit(1); // Exit with error code
+    process.exit(1);
   }
 }
 
