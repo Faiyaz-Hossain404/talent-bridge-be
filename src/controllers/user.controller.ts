@@ -13,9 +13,12 @@ export const createUserController = async (req: Request, res: Response) => {
   res.json(user);
 };
 
-export const getAllUsersController = async (_req: Request, res: Response) => {
-  const users = await getAllUsers();
-  res.json(users);
+export const getAllUsersController = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+
+  const result = await getAllUsers(page, limit);
+  res.json(result);
 };
 
 export const getUserByIdController = async (req: Request, res: Response) => {
