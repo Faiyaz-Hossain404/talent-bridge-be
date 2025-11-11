@@ -28,8 +28,11 @@ export const createJobController = async (req: Request, res: Response) => {
 
 export const getAllJobsController = async (req: Request, res: Response) => {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(req.query.limit as string) || 10)
+    );
 
     const result = await getAllJobs(page, limit);
     return res.status(200).json(result);
