@@ -35,7 +35,7 @@ export const getProfileByUserIdController = async (
     if (req.user?.roleId !== 1) {
       userId = req.user!.id;
     } else {
-      userId = Number(req.params.userId);
+      userId = Number(req.params.id);
     }
 
     const profile = await getProfileByUserId(userId);

@@ -19,6 +19,6 @@ router.delete("/me", authenticate, deleteProfileController);
 
 router.get("/", authenticate, requireAdmin, getAllProfilesController);
 router.get("/:id", authenticate, requireAdmin, getProfileByUserIdController);
-router.get("/:id", authenticate, requireAdmin, updateProfileByUserIdController);
+router.put("/:id", authenticate, requireAdmin, updateProfileByUserIdController);
 
 export default router;
