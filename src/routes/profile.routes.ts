@@ -5,6 +5,7 @@ import {
   getProfileByUserIdController,
   updateProfileController,
   deleteProfileController,
+  updateProfileByUserIdController,
 } from "../controllers/profile.controller";
 import { authenticate } from "../middlewares/auth.middleware";
 import { requireAdmin } from "../middlewares/role.middleware";
@@ -18,5 +19,6 @@ router.delete("/me", authenticate, deleteProfileController);
 
 router.get("/", authenticate, requireAdmin, getAllProfilesController);
 router.get("/:id", authenticate, requireAdmin, getProfileByUserIdController);
+router.put("/:id", authenticate, requireAdmin, updateProfileByUserIdController);
 
 export default router;

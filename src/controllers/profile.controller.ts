@@ -35,7 +35,7 @@ export const getProfileByUserIdController = async (
     if (req.user?.roleId !== 1) {
       userId = req.user!.id;
     } else {
-      userId = Number(req.params.userId);
+      userId = Number(req.params.id);
     }
 
     const profile = await getProfileByUserId(userId);
@@ -98,5 +98,27 @@ export const deleteProfileController = async (req: Request, res: Response) => {
     return res
       .status(500)
       .json({ message: error.message || "Failed to delete profile" });
+  }
+};
+
+export const updateProfileByUserIdController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    if (req.user?.roleId !== 1) {
+      return res.status(403).json({ message: "Forbidden to edit admin!" });
+    }
+
+    const userId = Number(req.params.id);
+    const updated = await updateProfile(userId, req.body);
+
+    if (!updated) return res.status(404).json({ message: "Profile not found" });
+
+    return res.json({ message: "Profile updated successfully", updated });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: error.message || "Failed to update profile" });
   }
 };

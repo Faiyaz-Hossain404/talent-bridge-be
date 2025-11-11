@@ -4,10 +4,12 @@ dotenv.config();
 import { ENV } from "./config/env";
 import app from "./app";
 import { sequelize, dbConnect } from "./config/database";
+import initAssociations from "./models";
 
 async function startServer() {
   try {
     await dbConnect();
+    initAssociations();
     await sequelize.sync({ alter: true });
     console.log("All models synchronized");
 
