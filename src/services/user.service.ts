@@ -48,7 +48,15 @@ export const getAllUsers = async (
 };
 
 export const getUserById = async (id: number): Promise<TUser | null> => {
-  const user = await User.findByPk(id);
+  const user = await User.findByPk(id, {
+    include: [
+      {
+        model: Profile,
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["password"] },
+  });
   return user ? (user.get() as TUser) : null;
 };
 
@@ -61,7 +69,15 @@ export const updateUser = async (
   }
 
   await User.update(data, { where: { id } });
-  const updated = await User.findByPk(id);
+  const updated = await User.findByPk(id, {
+    include: [
+      {
+        model: Profile,
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["password"] },
+  });
   return updated ? (updated.get() as TUser) : null;
 };
 
