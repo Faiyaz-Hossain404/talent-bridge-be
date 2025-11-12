@@ -14,13 +14,48 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
   return user.get() as TUser;
 };
 
-export const getAllUsers = async (): Promise<TUser[]> => {
-  const users = await User.findAll();
-  return users.map((u) => u.get() as TUser);
+export const getAllUsers = async (
+  page: number = 1,
+  limit: number = 20
+): Promise<{
+  users: TUser[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+}> => {
+  const offset = (page - 1) * limit;
+
+  const { count, rows } = await User.findAndCountAll({
+    limit,
+    offset,
+    order: [["createdAt", "DESC"]],
+    include: [
+      {
+        model: Profile,
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["password"] },
+  });
+
+  return {
+    users: rows.map((u) => u.get() as TUser),
+    total: count,
+    totalPages: Math.ceil(count / limit),
+    currentPage: page,
+  };
 };
 
 export const getUserById = async (id: number): Promise<TUser | null> => {
-  const user = await User.findByPk(id);
+  const user = await User.findByPk(id, {
+    include: [
+      {
+        model: Profile,
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["password"] },
+  });
   return user ? (user.get() as TUser) : null;
 };
 
@@ -33,7 +68,15 @@ export const updateUser = async (
   }
 
   await User.update(data, { where: { id } });
-  const updated = await User.findByPk(id);
+  const updated = await User.findByPk(id, {
+    include: [
+      {
+        model: Profile,
+        required: false,
+      },
+    ],
+    attributes: { exclude: ["password"] },
+  });
   return updated ? (updated.get() as TUser) : null;
 };
 
