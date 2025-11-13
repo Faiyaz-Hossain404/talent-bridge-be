@@ -34,12 +34,17 @@ export const getAllJobsController = async (req: Request, res: Response) => {
       Math.max(1, parseInt(req.query.limit as string) || 10)
     );
 
-    const result = await getAllJobs(page, limit);
+    const search = (req.params.search as string) || "";
+
+    type SearchBy = "all" | "title" | "company" | "location";
+    const by = req.query.by as string as SearchBy;
+
+    const result = await getAllJobs(page, limit, { search, by });
     return res.status(200).json(result);
-  } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: error.message || "Failed to fetch jobs" });
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch jobs";
+    return res.status(500).json({ message: errorMessage });
   }
 };
 
