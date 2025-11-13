@@ -37,7 +37,7 @@ export const getAllJobsController = async (req: Request, res: Response) => {
     const search = (req.params.search as string) || "";
 
     type SearchBy = "all" | "title" | "company" | "location";
-    const by = req.query.by as string as SearchBy;
+    const by = (req.query.by as string as SearchBy) || "all";
 
     const result = await getAllJobs(page, limit, { search, by });
     return res.status(200).json(result);
