@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createApplication,
+  getAllApplications,
   getApplicationsByUser,
   updateApplicationStatus,
 } from "../services/application.service";
@@ -65,5 +66,31 @@ export const adminUpdateApplicationStatus = async (
     return res.status(500).json({
       message: error.message || "Failed to update application status",
     });
+  }
+};
+
+export const adminListApplicationsController = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(
+      100,
+      Math.max(1, parseInt(req.query.limit as string) || 10)
+    );
+    const search = (req.query.search as string) || "";
+    const filterBy = req.query.filterBy as
+      | "users"
+      | "company"
+      | "job"
+      | undefined;
+
+    const result = await getAllApplications(page, limit, { search, filterBy });
+    return res.status(200).json(result);
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch applications";
+    return res.status(500).json({ message: errorMessage });
   }
 };

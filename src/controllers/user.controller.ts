@@ -16,8 +16,12 @@ export const createUserController = async (req: Request, res: Response) => {
 export const getAllUsersController = async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 20;
+  const search = (req.params.search as string) || "";
+  const sort =
+    (req.params.sort as "name_asc" | "name_desc" | "newest" | "oldest") ||
+    "name_asc";
 
-  const result = await getAllUsers(page, limit);
+  const result = await getAllUsers(page, limit, { search, sort });
   res.json(result);
 };
 

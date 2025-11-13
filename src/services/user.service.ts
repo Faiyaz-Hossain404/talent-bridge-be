@@ -1,3 +1,4 @@
+import { Op, WhereOptions } from "sequelize";
 import { User, Profile } from "../models";
 import { TUser, TUserCreateInput, TUserUpdateInput } from "../types/user.types";
 import { hashPassword } from "../utils/bcrypt";
@@ -14,9 +15,14 @@ export const createUser = async (data: TUserCreateInput): Promise<TUser> => {
   return user.get() as TUser;
 };
 
+type UserSort = "name_asc" | "name_desc" | "newest" | "oldest";
 export const getAllUsers = async (
   page: number = 1,
-  limit: number = 20
+  limit: number = 20,
+  opts?: {
+    search?: string;
+    sort?: UserSort;
+  }
 ): Promise<{
   users: TUser[];
   total: number;
@@ -25,10 +31,31 @@ export const getAllUsers = async (
 }> => {
   const offset = (page - 1) * limit;
 
+  const where: WhereOptions = {};
+  if (opts?.search?.trim()) {
+    where.name = { [Op.iLike]: `%${opts.search.trim()}%` };
+  }
+
+  const order =
+    opts?.sort === "name_desc"
+      ? [
+          ["name", "DESC"],
+          ["createdAt", "DESC"],
+        ]
+      : opts?.sort === "newest"
+      ? [["createdAt", "DESC"]]
+      : opts?.sort === "oldest"
+      ? [["createdAt", "ASC"]]
+      : [
+          ["name", "ASC"],
+          ["createdAt", "DESC"],
+        ];
+
   const { count, rows } = await User.findAndCountAll({
+    where,
     limit,
     offset,
-    order: [["createdAt", "DESC"]],
+    order: order as any,
     include: [
       {
         model: Profile,
