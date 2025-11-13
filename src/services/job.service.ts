@@ -1,13 +1,17 @@
+import { Op, WhereOptions } from "sequelize";
 import { Job } from "../models";
 
 import { TJobCreateInput, TJobUpdateInput, TJob } from "../types/job.types";
+
+type JobSearchBy = "all" | "title" | "company" | "location";
 
 export const createJob = (data: TJobCreateInput): Promise<TJob> =>
   Job.create(data) as unknown as Promise<TJob>;
 
 export const getAllJobs = async (
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  opts?: { search?: string; by?: JobSearchBy }
 ): Promise<{
   jobs: TJob[];
   total: number;
@@ -15,6 +19,29 @@ export const getAllJobs = async (
   currentPage: number;
 }> => {
   const offset = (page - 1) * limit;
+  const search = opts?.search?.trim();
+  const by = (opts?.by ?? "all") as JobSearchBy;
+
+  if (search) {
+    const pattern = `%${search}%`;
+    const where: WhereOptions = {};
+
+    if (by === "title") {
+      where.title = { [Op.iLike]: pattern };
+    } else if (by === "company") {
+      where.company = { [Op.iLike]: pattern };
+    } else if (by === "location") {
+      where.location = { [Op.iLike]: pattern };
+    } else {
+      Object.assign(where, {
+        [Op.or]: [
+          { title: { [Op.iLike]: pattern } },
+          { company: { [Op.iLike]: pattern } },
+          { location: { [Op.iLike]: pattern } },
+        ],
+      });
+    }
+  }
 
   const { count, rows } = await Job.findAndCountAll({
     limit,
