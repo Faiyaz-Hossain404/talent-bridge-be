@@ -140,15 +140,17 @@ export const getAllApplications = async (
       model: User,
       attributes: ["id", "name", "email", "roleId"],
       required: false,
+      include: [
+        {
+          model: Profile,
+          attributes: ["fullName", "resumeUrl"],
+          required: false,
+        },
+      ],
     },
     {
       model: Job,
       attributes: ["id", "title", "company", "location"],
-      required: false,
-    },
-    {
-      model: Profile,
-      attributes: ["fullName", "resumeUrl"],
       required: false,
     },
   ];
