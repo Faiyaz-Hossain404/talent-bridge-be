@@ -7,14 +7,15 @@ import {
   deleteJobController,
 } from "../controllers/job.controller";
 import { authenticate } from "../middlewares/auth.middleware";
+import { requireAdmin } from "../middlewares/role.middleware";
 
 const router = Router();
 
 router.get("/", getAllJobsController);
 router.get("/:id", getJobByIdController);
 
-router.post("/", authenticate, createJobController);
-router.put("/:id", authenticate, updateJobController);
-router.delete("/:id", authenticate, deleteJobController);
+router.post("/", authenticate, requireAdmin, createJobController);
+router.put("/:id", authenticate, requireAdmin, updateJobController);
+router.delete("/:id", authenticate, requireAdmin, deleteJobController);
 
 export default router;

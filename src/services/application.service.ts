@@ -179,7 +179,7 @@ export const getAllApplications = async (
     include,
     limit,
     offset,
-    distinct: true, // important when joining
+    distinct: true,
     order: [["createdAt", "DESC"]],
   });
 

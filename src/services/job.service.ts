@@ -21,7 +21,7 @@ export const getAllJobs = async (
   const offset = (page - 1) * limit;
   const search = opts?.search?.trim();
   const by = (opts?.by ?? "all") as JobSearchBy;
-  const where: WhereOptions = {};
+  let where: WhereOptions = {};
 
   if (search) {
     const pattern = `%${search}%`;
@@ -33,17 +33,18 @@ export const getAllJobs = async (
     } else if (by === "location") {
       where.location = { [Op.iLike]: pattern };
     } else {
-      Object.assign(where, {
+      where = {
         [Op.or]: [
           { title: { [Op.iLike]: pattern } },
           { company: { [Op.iLike]: pattern } },
           { location: { [Op.iLike]: pattern } },
         ],
-      });
+      };
     }
   }
 
   const { count, rows } = await Job.findAndCountAll({
+    where,
     limit,
     offset,
     order: [["createdAt", "DESC"]],
