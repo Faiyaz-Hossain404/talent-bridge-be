@@ -21,10 +21,10 @@ export const getAllJobs = async (
   const offset = (page - 1) * limit;
   const search = opts?.search?.trim();
   const by = (opts?.by ?? "all") as JobSearchBy;
+  const where: WhereOptions = {};
 
   if (search) {
     const pattern = `%${search}%`;
-    const where: WhereOptions = {};
 
     if (by === "title") {
       where.title = { [Op.iLike]: pattern };

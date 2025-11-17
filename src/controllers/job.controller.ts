@@ -34,7 +34,7 @@ export const getAllJobsController = async (req: Request, res: Response) => {
       Math.max(1, parseInt(req.query.limit as string) || 10)
     );
 
-    const search = (req.params.search as string) || "";
+    const search = (req.query.search as string) || "";
 
     type SearchBy = "all" | "title" | "company" | "location";
     const by = (req.query.by as string as SearchBy) || "all";
