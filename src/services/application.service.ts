@@ -1,4 +1,4 @@
-import { IncludeOptions, Op } from "sequelize";
+import { IncludeOptions, Op, WhereOptions } from "sequelize";
 import { Application, Job, Profile, User } from "../models";
 
 import {
@@ -119,12 +119,12 @@ export const updateApplicationStatus = async (
   return Application.findByPk(id) as unknown as Promise<TApplication | null>;
 };
 
-type AppFilterBy = "users" | "company" | "job";
+type AppSort = "newest" | "oldest";
 
 export const getAllApplications = async (
   page: number = 1,
   limit: number = 10,
-  opts?: { search?: string; filterBy?: AppFilterBy }
+  opts?: { search?: string; sort?: AppSort }
 ): Promise<{
   applications: TApplication[];
   total: number;
@@ -133,8 +133,13 @@ export const getAllApplications = async (
 }> => {
   const offset = (page - 1) * limit;
   const search = opts?.search?.trim();
-  const filterBy = opts?.filterBy as AppFilterBy | undefined;
+  const sort = opts?.sort ?? "newest";
 
+  // decide order: newest -> createdAt DESC, oldest -> createdAt ASC
+  const order =
+    sort === "oldest" ? [["createdAt", "ASC"]] : [["createdAt", "DESC"]];
+
+  // Base includes for joining user/profile and job
   const include: IncludeOptions[] = [
     {
       model: User,
@@ -155,34 +160,34 @@ export const getAllApplications = async (
     },
   ];
 
-  if (search) {
-    const pattern = { [Op.iLike]: `%${search}%` };
+  // top-level where object
+  let where: WhereOptions = {};
 
-    if (filterBy === "users") {
-      include[0].required = true;
-      include[0].where = { name: pattern };
-    } else if (filterBy === "company") {
-      include[1].required = true;
-      include[1].where = { company: pattern };
-    } else if (filterBy === "job") {
-      include[1].required = true;
-      include[1].where = { title: pattern };
-    } else {
-      include[0].required = true;
-      include[0].where = { name: pattern };
-      include[1].required = true;
-      include[1].where = {
-        [Op.or]: [{ title: pattern }, { company: pattern }],
-      };
-    }
+  if (search) {
+    const pattern = `%${search}%`;
+
+    // Use Sequelize.col paths for joined columns
+    where = {
+      [Op.or]: [
+        // User.name
+        { "$User.name$": { [Op.iLike]: pattern } },
+        // Profile.full_name (database column name)
+        { "$User.Profile.full_name$": { [Op.iLike]: pattern } },
+        // Job.title
+        { "$Job.title$": { [Op.iLike]: pattern } },
+        // Job.company
+        { "$Job.company$": { [Op.iLike]: pattern } },
+      ],
+    };
   }
 
   const { count, rows } = await Application.findAndCountAll({
+    where,
     include,
     limit,
     offset,
     distinct: true,
-    order: [["createdAt", "DESC"]],
+    order: order as any,
   });
 
   return {

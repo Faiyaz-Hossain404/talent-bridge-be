@@ -80,13 +80,9 @@ export const adminListApplicationsController = async (
       Math.max(1, parseInt(req.query.limit as string) || 10)
     );
     const search = (req.query.search as string) || "";
-    const filterBy = req.query.filterBy as
-      | "users"
-      | "company"
-      | "job"
-      | undefined;
+    const sort = (req.query.sort as "newest" | "oldest") || "newest";
 
-    const result = await getAllApplications(page, limit, { search, filterBy });
+    const result = await getAllApplications(page, limit, { search, sort });
     return res.status(200).json(result);
   } catch (error) {
     const errorMessage =
