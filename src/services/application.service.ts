@@ -168,7 +168,9 @@ export const getAllApplications = async (
       include[1].required = true;
       include[1].where = { title: pattern };
     } else {
+      include[0].required = true;
       include[0].where = { name: pattern };
+      include[1].required = true;
       include[1].where = {
         [Op.or]: [{ title: pattern }, { company: pattern }],
       };

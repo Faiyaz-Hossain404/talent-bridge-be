@@ -35,11 +35,9 @@ export const getAllJobsController = async (req: Request, res: Response) => {
     );
 
     const search = (req.query.search as string) || "";
+    const sort = (req.query.sort as "newest" | "oldest") || "newest";
 
-    type SearchBy = "all" | "title" | "company" | "location";
-    const by = (req.query.by as string as SearchBy) || "all";
-
-    const result = await getAllJobs(page, limit, { search, by });
+    const result = await getAllJobs(page, limit, { search, sort });
     return res.status(200).json(result);
   } catch (error) {
     const errorMessage =

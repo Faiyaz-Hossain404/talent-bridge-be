@@ -36,17 +36,19 @@ export const getAllUsers = async (
     where.name = { [Op.iLike]: `%${opts.search.trim()}%` };
   }
 
+  const sort = opts?.sort ?? "name_asc";
   const order =
-    opts?.sort === "name_desc"
+    sort === "name_desc"
       ? [
           ["name", "DESC"],
           ["createdAt", "DESC"],
         ]
-      : opts?.sort === "newest"
+      : sort === "newest"
       ? [["createdAt", "DESC"]]
-      : opts?.sort === "oldest"
+      : sort === "oldest"
       ? [["createdAt", "ASC"]]
       : [
+          // default name_asc
           ["name", "ASC"],
           ["createdAt", "DESC"],
         ];

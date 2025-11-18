@@ -4,6 +4,8 @@ import { Job } from "../models";
 import { TJobCreateInput, TJobUpdateInput, TJob } from "../types/job.types";
 
 type JobSearchBy = "all" | "title" | "company" | "location";
+type JobSort = "newest" | "oldest";
+type SortField = "createdAt" | "title" | "company" | "location";
 
 export const createJob = (data: TJobCreateInput): Promise<TJob> =>
   Job.create(data) as unknown as Promise<TJob>;
@@ -11,7 +13,10 @@ export const createJob = (data: TJobCreateInput): Promise<TJob> =>
 export const getAllJobs = async (
   page: number = 1,
   limit: number = 10,
-  opts?: { search?: string; by?: JobSearchBy }
+  opts?: {
+    search?: string;
+    sort?: JobSort;
+  }
 ): Promise<{
   jobs: TJob[];
   total: number;
@@ -20,34 +25,30 @@ export const getAllJobs = async (
 }> => {
   const offset = (page - 1) * limit;
   const search = opts?.search?.trim();
-  const by = (opts?.by ?? "all") as JobSearchBy;
+  const sort = opts?.sort ?? "newest";
+
+  const order =
+    sort === "oldest" ? [["createdAt", "ASC"]] : [["createdAt", "DESC"]];
+
   let where: WhereOptions = {};
 
   if (search) {
     const pattern = `%${search}%`;
 
-    if (by === "title") {
-      where.title = { [Op.iLike]: pattern };
-    } else if (by === "company") {
-      where.company = { [Op.iLike]: pattern };
-    } else if (by === "location") {
-      where.location = { [Op.iLike]: pattern };
-    } else {
-      where = {
-        [Op.or]: [
-          { title: { [Op.iLike]: pattern } },
-          { company: { [Op.iLike]: pattern } },
-          { location: { [Op.iLike]: pattern } },
-        ],
-      };
-    }
+    where = {
+      [Op.or]: [
+        { title: { [Op.iLike]: pattern } },
+        { company: { [Op.iLike]: pattern } },
+        { location: { [Op.iLike]: pattern } },
+      ],
+    };
   }
 
   const { count, rows } = await Job.findAndCountAll({
     where,
     limit,
     offset,
-    order: [["createdAt", "DESC"]],
+    order: order as any,
   });
 
   return {
