@@ -3,9 +3,7 @@ import { Job } from "../models";
 
 import { TJobCreateInput, TJobUpdateInput, TJob } from "../types/job.types";
 
-type JobSearchBy = "all" | "title" | "company" | "location";
 type JobSort = "newest" | "oldest";
-type SortField = "createdAt" | "title" | "company" | "location";
 
 export const createJob = (data: TJobCreateInput): Promise<TJob> =>
   Job.create(data) as unknown as Promise<TJob>;

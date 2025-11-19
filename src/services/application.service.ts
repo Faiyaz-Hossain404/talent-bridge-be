@@ -160,7 +160,6 @@ export const getAllApplications = async (
     },
   ];
 
-  // top-level where object
   let where: WhereOptions = {};
 
   if (search) {
