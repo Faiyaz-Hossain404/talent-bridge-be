@@ -135,11 +135,9 @@ export const getAllApplications = async (
   const search = opts?.search?.trim();
   const sort = opts?.sort ?? "newest";
 
-  // decide order: newest -> createdAt DESC, oldest -> createdAt ASC
   const order =
     sort === "oldest" ? [["createdAt", "ASC"]] : [["createdAt", "DESC"]];
 
-  // Base includes for joining user/profile and job
   const include: IncludeOptions[] = [
     {
       model: User,
@@ -165,16 +163,11 @@ export const getAllApplications = async (
   if (search) {
     const pattern = `%${search}%`;
 
-    // Use Sequelize.col paths for joined columns
     where = {
       [Op.or]: [
-        // User.name
         { "$User.name$": { [Op.iLike]: pattern } },
-        // Profile.full_name (database column name)
         { "$User.Profile.full_name$": { [Op.iLike]: pattern } },
-        // Job.title
         { "$Job.title$": { [Op.iLike]: pattern } },
-        // Job.company
         { "$Job.company$": { [Op.iLike]: pattern } },
       ],
     };
