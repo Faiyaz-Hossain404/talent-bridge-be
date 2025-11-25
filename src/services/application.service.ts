@@ -6,6 +6,7 @@ import {
   TApplicationStatusUpdateInput,
   TApplication,
 } from "../types/application.types";
+import { sendApplicationStatusEmail } from "./email.service";
 
 export const createApplication = async (
   data: TApplicationCreateInput
@@ -115,8 +116,44 @@ export const updateApplicationStatus = async (
   id: number,
   data: TApplicationStatusUpdateInput
 ): Promise<TApplication | null> => {
-  await Application.update(data, { where: { id } });
-  return Application.findByPk(id) as unknown as Promise<TApplication | null>;
+  const app = await Application.findByPk(id, {
+    include: [
+      {
+        model: User,
+        attributes: ["id", "name", "email"],
+      },
+      {
+        model: Job,
+        attributes: ["id", "title", "company"],
+      },
+    ],
+  });
+
+  if (!app) {
+    return null;
+  }
+
+  app.set(data);
+  await app.save();
+
+  const plain = app.get({ plain: true }) as any;
+
+  const user = (app as any).User as
+    | { email: string; name?: string }
+    | undefined;
+  const job = (app as any).Job as
+    | { title?: string; company?: string }
+    | undefined;
+
+  if (user?.email && data.status) {
+    void sendApplicationStatusEmail({
+      to: user.email,
+      name: user.name || "",
+      jobTitle: job?.title || "your application",
+      status: data.status,
+    });
+  }
+  return plain as TApplication;
 };
 
 type AppSort = "newest" | "oldest";
