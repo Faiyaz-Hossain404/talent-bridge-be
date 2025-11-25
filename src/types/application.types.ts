@@ -16,6 +16,7 @@ export interface TApplicationCreateInput {
   coverLetter?: string;
   metadata?: string;
 }
+
 export interface TApplicationStatusUpdateInput {
   status: string;
 }
